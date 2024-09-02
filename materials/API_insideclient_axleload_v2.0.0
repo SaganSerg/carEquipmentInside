@@ -1,0 +1,168 @@
+API по взаимодействию клиента по "прошивке" датчиков нагрузки на ось с сервером.
+
+Протокол --- http, позднее когда сервер будет полноценно развернут --- https
+Метод http-запроса во всех запросах --- POST
+
+Запросы выполняются по шагам, которые должны следовать четко один за другим.
+
+responseCode --- код ответа: первая цифра это шаг(этап) нулевой шаг --- это ответ применимый для любого шага, вторая цифра (успешно - 0, ошибка - 1 ), третья и четвертые цифры --- это код ошибки
+
+Шаг 1.
+
+Запрос:
+url --- /axleload/sensorsRegistration/getIDs
+JSON:
+{
+  "username": "someusername",
+  "password": "somepassword",
+  "requiredNumberOfIDs": 14
+}
+"requiredNumberOfIDs" -- это количество идентификаторов, которое требуется
+
+Ответы:
+1) Если "все хорошо"
+JSON:
+{
+  "result": 'OK',
+  "discription": "All right",
+  "responseCode": "1000",
+  "token": "lkj;lkj;lkj;kj",
+  "IDs": [12, 13, 14, 87]
+}
+2) Если "логин или пароль не верные"
+JSON:
+{
+  "result": 'Error',
+  "discription": "Login or password is incorrect",
+  "responseCode": "1101"
+}
+3) Если в запросе количество требуемых id-шников меньше 1
+JSON:
+{
+  "result": 'Error',
+  "discription": "The required quantity is less than zero",
+  "responseCode": "1102"
+}
+4) Если в запросе в поле для количества id-шников приходит некоректный запрос (не число)
+JSON:
+{
+  "result": 'Error',
+  "discription": "Error requesting number of identifiers",
+  "responseCode": "1103"
+}
+
+
+Шаг 2.
+
+Запрос:
+url --- /axleload/sensorsRegistration/register
+ВНИМАНИЕ!!! СТРУКТУРА ДАННОГО JSON НУЖНО ОБСУДИТЬ!!!!!!
+JSON:
+{
+  "Token": "lkljlkjlkjlkjlkj",
+  "Sensors": [
+      {
+        "ID": "777",
+        "ROLE": "Master",
+        "MAC": "AA:99:09:FC:02:FE",
+        "DATE": "2024-03-25",
+        "PRODUCT-VERSION": "BLE_TK2700-1.3.0"
+      },
+      {
+        "ID": "778",
+        "ROLE": "Slave",
+        "MAC": "AA:99:0A:FC:02:FE",
+        "DATE": "2024-03-25",
+        "PRODUCT-VERSION": "BLE_TK2700-1.3.0"
+      },
+      {
+        "ID": "779",
+        "ROLE": "Slave",
+        "MAC": "AA:99:0B:FC:02:FE",
+        "DATE": "2024-03-25",
+        "PRODUCT-VERSION": "BLE_TK2700-1.3.0"
+      }
+    ]
+}
+
+Ответы:
+1) Если в заявке на регистрацию указаны идентификаторы, которые не были зарезервированы для данной сессии
+JSON:
+{
+  "result": "Error",
+  "discrioption": "IDs is wrong",
+  "responseCode": "2100",
+  "details": {
+    'right': [12, 13, 14],
+    'wrong': [15, 16, 17]
+  }
+}
+'right' --- это массив с идентификатороми, которые ДОЛЖНЫ быть
+"wrong" --- это массив с идентификаторами, которые ФАКТИЧЕСКИ ПРИШЛИ
+2) Если все хорошо
+JSON:
+{
+  "result": 'OK',
+  "discription": "All right",
+  "responseCode": "2000"
+}
+
+Шаг 3.
+
+Запрос:
+url --- /axleload/sensorsRegistration/notificationOfReadiness
+JSON:
+{
+  "Token": "lkljlkjlkjlkjlkj",
+  "ReadyProductsID": [12, 14]
+}
+ReadyProductsID --- это массив в котором перечислены идентификаторы датчиков которые прошились. Он может быть даже пустым
+
+Ответы:
+1) Если все хорошо
+JSON:
+{
+  "result": "OK",
+  "discription": "All right",
+  "responseCode": "3001",
+  "RegisteredProductsID": [12, 13],
+  "ReRegisteredProductsID": [34]
+}
+RegisteredProductsID --- это моссив в котором указаны идентификаторы датчиков, которые зарегестрированы в базе
+ReRegisteredProductsID -- это массив, в котором указаны идентификаторы датчиков, которые зарегестрированы повторно (перезарегестрированы)
+
+
+
+
+Шаг ЛЮБОЙ!!!
+
+
+Ответы, которые могут быть на разных  шагах:
+1) Если "ошибочный URL"
+JSON:
+{
+  "result": "Error",
+  "discrioption": "URL is wrong",
+  "responseCode": "0100"
+}
+2) Если "в логике работы сервера произошел сбой"
+JSON:
+{
+  "result": 'Error',
+  "discription": "Something went wrong",
+  "responseCode": "0102"
+}
+3) Если "ошибочный токен"
+JSON:
+{
+  "result": "Error",
+  "discrioption": "Token is wrong",
+  "responseCode": "0101"
+}
+4) Если "в структуре JSON есть ошибки"
+JSON:
+{
+  "result": "Error",
+  "discrioption": "JSON structure is wrong",
+  "responseCode": "0103"
+}
