@@ -48,6 +48,9 @@ module.exports = {
         {jsonName: "MAC", dbName: 'mac'},
         {jsonName: "DATE", dbName: 'date'},
         {jsonName: "PRODUCT-VERSION", dbName: 'productversion'}
-    ]
+    ],
+    deviceType: {
+        BluetoothSensor_Axleloads: "BluetoothSensor_Axleloads", // это блютузный датчик нагрузки на ось
+    }
 
 }

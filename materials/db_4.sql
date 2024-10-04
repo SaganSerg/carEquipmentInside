@@ -47,7 +47,7 @@ ENGINE=INNODB;
 CREATE TABLE devices -- данная таблица нужна для того, чтобы у всех устройств была сквозная идентификайция
 (
     device_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    device_type TEXT NOT NULL, -- архитектура приложения должна быть сделана так, чтобы на момент резервирования ID сервер уже должен знать какой тип устройства регестрируется, поэтому проблем чтобы заполнить это поле быть не должно.
+    device_type TEXT NOT NULL, -- архитектура приложения должна быть сделана так, чтобы на момент резервирования ID сервер уже должен знать какой тип устройства регестрируется, поэтому проблем чтобы заполнить это поле быть не должно. Например, при регистрации блютуз сенсора для нагрузки на ось --- BluetoothSensor_Axleloads
     device_jastreserved SMALLINT DEFAULT 1, -- в этом поле хранится информация о том, что данный id ПРОСТО зарегестрирован т.е. никакой реальный девайс не привязан т.е. имеется ввиду, что данная метка будет иметь значение 1, пока не придет окончательный ответ от клиента о том, что все датчики прошиты и сессию можно закрывать.
 
     session_id INT UNSIGNED NOT NULL,
@@ -64,15 +64,15 @@ ENGINE=INNODB;
 Каждый вид устройства придется выносить в отдельную таблицу т.е. вот сейчас у нас есть устройства сенсоры для нагрузки на ось. А потом возможно будут нужны, уже для другого сервиса другие датчики и они будут уже хранится в другой таблице
 */
 /* SELECT device_id */
-CREATE TABLE axleloadsensors -- при формировании qr-кода нужно зашивать еще и принадлежность датчика к сервису
+CREATE TABLE axleloadbluetoothsensors -- при формировании qr-кода нужно зашивать еще и принадлежность датчика к сервису
 (
-    axleloadsensor_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    axleloadsensor_role TEXT,
-    axleloadsensor_mac CHAR(17),
-    axleloadsensor_date VARCHAR(19), -- данное поле переменной длины сделано на всякий случай -- вдруг в дату добавятся и дрегие данные предполагается что могут быть часы минуты секунды
-    axleloadsensor_productversion TEXT,
-    axleloadsensor_devicetype TEXT, -- axleloadsensor_devicetype
-    axleloadsensor_name TEXT,
+    axleloadbluetoothsensor_id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    axleloadbluetoothsensor_role TEXT,
+    axleloadbluetoothsensor_mac CHAR(17),
+    axleloadbluetoothsensor_date VARCHAR(19), -- данное поле переменной длины сделано на всякий случай -- вдруг в дату добавятся и дрегие данные предполагается что могут быть часы минуты секунды
+    axleloadbluetoothsensor_productversion TEXT,
+    axleloadbluetoothsensor_devicetype TEXT, -- axleloadbluetoothsensor_devicetype
+    axleloadbluetoothsensor_name TEXT,
 
 
     device_id INT UNSIGNED NOT NULL UNIQUE,

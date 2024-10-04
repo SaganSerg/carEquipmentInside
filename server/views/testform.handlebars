@@ -201,7 +201,7 @@
             password: form.elements.password.value,
             requiredNumberOfIDs: form.elements.requiredNumberOfIDs.value
         })
-        fetch('http://localhost:3000/axleload/sensorsRegistration/getIDs', {
+        fetch('http://localhost:3000/axleload/BluetoothSensorsRegistration/getIDs', {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
@@ -247,7 +247,7 @@
                 }
             ]
         })
-        fetch('http://localhost:3000/axleload/sensorsRegistration/register', {
+        fetch('http://localhost:3000/axleload/BluetoothSensorsRegistration/register', {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',
@@ -267,7 +267,7 @@
                 form.elements.id_3.value,
             ]
         })
-        fetch('http://localhost:3000/axleload/sensorsRegistration/notificationOfReadiness', {
+        fetch('http://localhost:3000/axleload/BluetoothSensorsRegistration/notificationOfReadiness', {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json',

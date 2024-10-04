@@ -9,20 +9,15 @@ http://localhost:3000/api/signup/ytrwerewpoyhgjkjsgskhgqrazxcvbnmjhdfgtyiuoplhjg
 
 2) Получение ID-шников
 запрашиваем 3 id-шника
-Получили:
-
-
-
 {"result":"OK",
 "discription":"All right",
 "responseCode":"1000",
-"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSUQiOjMsInVzZXJJRCI6MSwiaWF0IjoxNzI1Mjc4NDcxLCJleHAiOjE3MjUyNzkzNzF9.vY95SOK-lwhyQs22ysuRYpsxow0qs2Dh3o3xWqNH5o0",
-"IDs":[7,8,9]}
-!!!!! Так как время истечения токена одни сутки, нужно будет изменить время и проверить как это работает.
+"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSUQiOjEsInVzZXJJRCI6MSwiaWF0IjoxNzI3Njg2NDYyLCJleHAiOjE3Mjc2ODczNjJ9.GBDuK1SFXJ_i2l2VVysiEa0KXd_NBQYOfss-lHd7PX0",
+"IDs":[1,2,3]}
 
 3) Регестрируем сенсоры
+{"result":"OK","discription":"All right","responseCode":"2000"}
 
 
 4) подтверждаем что все прошло хорошо
-
-
+{"result":"OK","discription":"All right","responseCode":"3001","RegisteredProductsID":["1","2","3"],"ReRegisteredProductsID":[]}

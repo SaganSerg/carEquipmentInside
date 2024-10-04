@@ -67,7 +67,8 @@ const { credentials,
     smtpHost,
     smtpPort,
     smtpUser,
-    sensorPropertyNameList
+    sensorPropertyNameList,
+    deviceType
 } = require('./config')
 
 const sessionStore = new MySQLStore(
@@ -527,7 +528,7 @@ app.post('/api/signup/ytrwerewpoyhgjkjsgskhgqrazxcvbnmjhdfgtyiuoplhjgdnb', funct
     })
 })
 
-app.post('/axleload/sensorsRegistration/getIDs', passport.authenticate('local', {
+app.post('/axleload/BluetoothSensorsRegistration/getIDs', passport.authenticate('local', {
     failureRedirect: '/axleload/sensorsRegistration/loginFailer'
 }), (req, res, next) => {
     let { username, requiredNumberOfIDs } = req.body
@@ -551,7 +552,7 @@ app.post('/axleload/sensorsRegistration/getIDs', passport.authenticate('local', 
             for (let i = 0; i < requiredNumberOfIDs; i++) {
                 if (i > 0) SQLRequestDevices += ', '
                 SQLRequestDevices += '(?, ?)'
-                paramDevices.push('axleloadsensor', sessionID)
+                paramDevices.push(deviceType["BluetoothSensor_Axleloads"], sessionID)
             }
             db.run(SQLRequestDevices, paramDevices, (err, insertDevicesRows) => {
                 if (err) {
@@ -574,16 +575,16 @@ app.post('/axleload/sensorsRegistration/getIDs', passport.authenticate('local', 
                     if (err || selectDevicesRows.length !== insertDevicesRows.affectedRows) {
                         return res.status(500).json(step0_Error_somethingWrong)
                     }
-                    let SQLRequestAxleloadsensors = `INSERT INTO axleloadsensors (device_id) VALUES `
-                    const paramAxleloadsensor = []
+                    let SQLRequestaxleloadbluetoothsensors = `INSERT INTO axleloadbluetoothsensors (device_id) VALUES `
+                    const paramaxleloadbluetoothsensor = []
                     for (let i = 0; i < selectDevicesRows.length; i++) {
-                        if (i > 0) SQLRequestAxleloadsensors += ', '
-                        SQLRequestAxleloadsensors += `(?)`
+                        if (i > 0) SQLRequestaxleloadbluetoothsensors += ', '
+                        SQLRequestaxleloadbluetoothsensors += `(?)`
                         let deveceId = selectDevicesRows[i].device_id
-                        paramAxleloadsensor.push(deveceId)
+                        paramaxleloadbluetoothsensor.push(deveceId)
                         step1_OK['IDs'].push(deveceId)
                     }
-                    db.run(SQLRequestAxleloadsensors, paramAxleloadsensor, (err, insertAxleloadsensorsRows) => {
+                    db.run(SQLRequestaxleloadbluetoothsensors, paramaxleloadbluetoothsensor, (err, insertaxleloadbluetoothsensorsRows) => {
                         if (err) {
                             return res.status(500).json(step0_Error_somethingWrong)
                         }
@@ -595,7 +596,7 @@ app.post('/axleload/sensorsRegistration/getIDs', passport.authenticate('local', 
         })
     })
 })
-app.get('/axleload/sensorsRegistration/loginFailer', (req, res, next) => {
+app.get('/axleload/BluetoothSensorsRegistration/loginFailer', (req, res, next) => {
     res.status(200).json(step1_Error_loginOrPassIncorrect)
 })
 function checkToken(req, res, next) {
@@ -615,7 +616,7 @@ function checkToken(req, res, next) {
         next();
     })
 }
-app.post('/axleload/sensorsRegistration/register',
+app.post('/axleload/BluetoothSensorsRegistration/register',
     checkToken,
     (req, res, next) => {
         let { sessionID, userID } = req.user
@@ -687,7 +688,7 @@ app.post('/axleload/sensorsRegistration/register',
             */
             // function sensorDataForDB(counter, Sensors) {
             //     // sensorPropertyNameList
-            //     let DBNamePrefix = `axleloadsensor`
+            //     let DBNamePrefix = `axleloadbluetoothsensor`
             //     let DBNamePrefixDelimeter = `_`
             //     let SQLRequest = `UPDATE ${DBNamePrefix}s SET `
             //     let SQLRequestEnd = `WHERE `
@@ -717,7 +718,7 @@ app.post('/axleload/sensorsRegistration/register',
             // }
             function sensorDataForDB(counter, Sensors) {
                 // sensorPropertyNameList
-                let DBNamePrefix = `axleloadsensor`
+                let DBNamePrefix = `axleloadbluetoothsensor`
                 let DBNamePrefixDelimeter = `_`
 
                 let SQLRequest = `UPDATE ${DBNamePrefix}s SET `
@@ -754,7 +755,7 @@ app.post('/axleload/sensorsRegistration/register',
             function updateSensors(err) {
                 console.log(sensorDataForDB())
                 if (err) {
-                    console.log('after: UPDATE axleloadsensors')
+                    console.log('after: UPDATE axleloadbluetoothsensors')
                     console.log(err)
                     return res.status(500).json(step0_Error_somethingWrong)
                 }
@@ -763,13 +764,13 @@ app.post('/axleload/sensorsRegistration/register',
                     return res.status(200).json(step2_OK)
                 }
 
-                // db.run(`UPDATE axleloadsensors 
-                //         SET axleloadsensor_role = ?, 
-                //         axleloadsensor_mac = ?, 
-                //         axleloadsensor_date = ?,  
-                //         axleloadsensor_productversion = ?,
-                //         axleloadsensor_devicetype = ?,
-                //         axleloadsensor_name = ?
+                // db.run(`UPDATE axleloadbluetoothsensors 
+                //         SET axleloadbluetoothsensor_role = ?, 
+                //         axleloadbluetoothsensor_mac = ?, 
+                //         axleloadbluetoothsensor_date = ?,  
+                //         axleloadbluetoothsensor_productversion = ?,
+                //         axleloadbluetoothsensor_devicetype = ?,
+                //         axleloadbluetoothsensor_name = ?
                 //         WHERE device_id = ?`,
                 //     [
 
@@ -792,7 +793,7 @@ app.post('/axleload/sensorsRegistration/register',
     }
 )
 
-app.post('/axleload/sensorsRegistration/notificationOfReadiness', checkToken, (req, res, next) => {
+app.post('/axleload/BluetoothSensorsRegistration/notificationOfReadiness', checkToken, (req, res, next) => {
     let { sessionID, userID } = req.user
     let { ReadyProductsID } = req.body
     if (!Array.isArray(ReadyProductsID)) return res.status(200).json(step3_Error_notIDs)
